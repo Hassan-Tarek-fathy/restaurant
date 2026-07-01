@@ -92,6 +92,9 @@ model Order {
   products    Json[]
   user        User      @relation(fields: [userEmail], references: [email])
   userEmail   String
+  address    String
+  phone      String
+  notes      String?
 }
 model Offer {
   id          String   @id @default(cuid())

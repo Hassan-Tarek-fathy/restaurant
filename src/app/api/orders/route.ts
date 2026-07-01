@@ -36,16 +36,21 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const body = await req.json();
+ const body = await req.json();
 
-  const order = await prisma.order.create({
-    data: {
-      price: body.price,
-      status: "Pending",
-      products: body.products,
-      userEmail: session.user.email,
-    },
-  });
+const order = await prisma.order.create({
+  data: {
+    price: body.price,
+    status: "Pending",
+    products: body.products,
+
+    address: body.address,
+    phone: body.phone,
+    notes: body.notes,
+
+    userEmail: session.user.email!,
+  },
+});
 
   return NextResponse.json(order);
 }

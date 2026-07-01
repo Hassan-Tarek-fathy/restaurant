@@ -1,6 +1,7 @@
 "use client";
-
+import { useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { Trash2 } from "lucide-react";
 import { useCartStore } from "@/utils/store";
 import { toast } from "react-toastify";
@@ -15,26 +16,48 @@ const CartPage = () => {
     decreaseQuantity,
     clearCart
   } = useCartStore();
+  const [showModal, setShowModal] = useState(false);
+const [address, setAddress] = useState("");
+const [phone, setPhone] = useState("");
+const [notes, setNotes] = useState("");
 
-  const handleOrder = async () => {
-    const res = await fetch("/api/orders", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        price: totalPrice + 2,
-        products,
-      }),
-    });
+ const handleOrder = async () => {
+  if (!address.trim()) {
+    toast.error("Please enter your address");
+    return;
+  }
 
-    if (res.ok) {
-      clearCart();
-      toast.success("Order placed successfully!");
-    } else {
-      toast.error("Failed to place order");
-    }
-  };
+  if (!phone.trim()) {
+    toast.error("Please enter your phone number");
+    return;
+  }
+
+  const res = await fetch("/api/orders", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      price: totalPrice + 2,
+      products,
+      address,
+      phone,
+      notes,
+    }),
+  });
+
+  if (res.ok) {
+    clearCart();
+    setShowModal(false);
+    setAddress("");
+    setPhone("");
+    setNotes("");
+
+    toast.success("Order placed successfully!");
+  } else {
+    toast.error("Failed to place order");
+  }
+};
 
   return (
     <section className="min-h-[calc(100vh-6rem)] md:min-h-[calc(100vh-9rem)] bg-zinc-950 py-10">
@@ -180,15 +203,15 @@ const CartPage = () => {
           </div>
 
           <button
-            onClick={handleOrder}
-            className="w-full mt-8 rounded-2xl bg-yellow-500 py-4 text-lg font-bold text-black hover:bg-yellow-400 transition"
-          >
-            Confirm Order
-          </button>
+  onClick={() => setShowModal(true)}
+  className="w-full mt-8 rounded-2xl bg-yellow-500 py-4 text-lg font-bold text-black hover:bg-yellow-400 transition"
+>
+  Confirm Order
+</button>
 
-          <button className="w-full mt-4 border border-zinc-700 text-zinc-300 py-4 rounded-2xl hover:bg-zinc-800 transition">
+          <Link href="/" className="w-full mt-4 border border-zinc-700 text-zinc-300 py-4 rounded-2xl hover:bg-zinc-800 transition inline-block text-center">
             Continue Shopping
-          </button>
+          </Link>
 
           <div className="mt-8 rounded-2xl bg-zinc-800 p-4 text-center">
             <p className="text-zinc-400">
@@ -199,6 +222,54 @@ const CartPage = () => {
           </div>
         </div>
       </div>
+      {showModal && (
+  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-4">
+    <div className="w-full max-w-md rounded-3xl bg-zinc-900 p-6 border border-zinc-700">
+      <h2 className="text-2xl font-bold text-white mb-6">
+        Delivery Information
+      </h2>
+
+      <input
+        type="text"
+        placeholder="Delivery Address"
+        value={address}
+        onChange={(e) => setAddress(e.target.value)}
+        className="w-full mb-4 rounded-xl bg-zinc-800 p-4 text-white outline-none"
+      />
+
+      <input
+        type="text"
+        placeholder="Phone Number"
+        value={phone}
+        onChange={(e) => setPhone(e.target.value)}
+        className="w-full mb-4 rounded-xl bg-zinc-800 p-4 text-white outline-none"
+      />
+
+      <textarea
+        placeholder="Notes (Optional)"
+        value={notes}
+        onChange={(e) => setNotes(e.target.value)}
+        className="w-full mb-6 rounded-xl bg-zinc-800 p-4 text-white outline-none"
+      />
+
+      <div className="flex gap-4">
+        <button
+          onClick={() => setShowModal(false)}
+          className="flex-1 rounded-xl border border-zinc-700 py-3 text-white"
+        >
+          Cancel
+        </button>
+
+        <button
+          onClick={handleOrder}
+          className="flex-1 rounded-xl bg-yellow-500 py-3 font-bold text-black"
+        >
+          Confirm
+        </button>
+      </div>
+    </div>
+  </div>
+)}
     </section>
   );
 };
