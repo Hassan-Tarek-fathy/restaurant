@@ -4,8 +4,11 @@ import Image from "next/image";
 import { Flame, Star, Truck } from "lucide-react";
 import { ProductType } from "@/types/types";
 
+const baseUrl =
+  process.env.NEXTAUTH_URL || process.env.NEXT_PUBLIC_URL;
+
 const getData = async (id: string) => {
-  const res = await fetch(`/api/product/${id}`, {
+  const res = await fetch(`${baseUrl}/api/product/${id}`, {
     cache: "no-store",
   });
 

@@ -1,8 +1,14 @@
+
 import FeaturedSlider from "./FeaturedSlider";
 import { ProductType } from "@/types/types";
 
 const getData = async () => {
-  const res = await fetch(`/api/product`, {
+  const baseUrl =
+    process.env.NEXTAUTH_URL ||
+    process.env.NEXT_PUBLIC_URL ||
+    "http://localhost:3000";
+
+  const res = await fetch(`${baseUrl}/api/product`, {
     cache: "no-store",
   });
 

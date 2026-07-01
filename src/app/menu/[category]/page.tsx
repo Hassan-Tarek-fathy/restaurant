@@ -4,10 +4,14 @@ import Link from "next/link";
 import MobileCarousel from "@/components/MobileCarousel";
 
 const getData = async (category: string) => {
-  const res = await fetch(
-    `/api/product?cat=${category}`,
-    { cache: "no-store" }
-  );
+  const baseUrl =
+    process.env.NEXTAUTH_URL ||
+    process.env.NEXT_PUBLIC_URL ||
+    "http://localhost:3000";
+
+  const res = await fetch(`${baseUrl}/api/product?cat=${category}`, {
+    cache: "no-store",
+  });
 
   if (!res.ok) {
     throw new Error("Failed to fetch data");
@@ -15,7 +19,6 @@ const getData = async (category: string) => {
 
   return res.json();
 };
-
 type Props = {
   params: Promise<{
     category: string;

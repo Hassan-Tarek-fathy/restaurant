@@ -1,14 +1,20 @@
 import { MenuType } from "@/types/types";
 import Link from "next/link";
  const getData = async () => {
-  const res = await fetch(`/api/categories`, {
+  const baseUrl =
+    process.env.NEXTAUTH_URL ||
+    process.env.NEXT_PUBLIC_URL ||
+    "http://localhost:3000";
+
+  const res = await fetch(`${baseUrl}/api/categories`, {
     cache: "no-store",
   });
+
   if (!res.ok) {
     throw new Error("Failed to fetch data");
   }
-  const data = await res.json();
-  return data;
+
+  return res.json();
 };
 const MenuPage =  async () => {
   const menu:MenuType = await getData();
