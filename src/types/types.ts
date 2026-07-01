@@ -26,6 +26,9 @@ export type OrderType = {
   status: string;
   createdAt: string;
   intent_id: string;
+  address?: string;
+phone?: string;
+notes?: string;
 };
 export type CartItemType = {
     cartId: string;

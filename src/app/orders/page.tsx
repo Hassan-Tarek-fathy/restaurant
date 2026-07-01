@@ -140,31 +140,59 @@ const OrdersPage = () => {
       <div className="overflow-x-auto rounded-3xl border border-zinc-800 bg-zinc-900">
         <table className="w-full min-w-[900px]">
           <thead className="bg-zinc-800 text-zinc-300">
-            <tr>
-              <th className="px-8 py-5 text-left">Order ID</th>
-              <th className="px-8 py-5 text-left">Date</th>
-              <th className="px-8 py-5 text-left">Products</th>
-              <th className="px-8 py-5 text-left">Total</th>
-              <th className="px-8 py-5 text-left">Status</th>
-            </tr>
+           <tr>
+  <th className="px-8 py-5 text-left">Order Number</th>
+  <th className="px-8 py-5 text-left">Date</th>
+
+  {session?.user?.isAdmin && (
+    <>
+      <th className="px-8 py-5 text-left">Phone</th>
+      <th className="px-8 py-5 text-left">Address</th>
+      <th className="px-8 py-5 text-left">Notes</th>
+    </>
+  )}
+
+  <th className="px-8 py-5 text-left">Products</th>
+  <th className="px-8 py-5 text-left">Total</th>
+  <th className="px-8 py-5 text-left">Status</th>
+</tr>
           </thead>
 
           <tbody>
-            {data?.map((item : OrderType) => {
-              const style = statusStyle(item.status);
+{data?.map((item: OrderType, index) => {           
+     const style = statusStyle(item.status);
 
               return (
                 <tr
                   key={item.id}
                   className="border-t border-zinc-800 hover:bg-zinc-800/50 transition"
                 >
-                  <td className="px-8 py-6 font-semibold text-yellow-500">
-                    {item.id}
+                  <td className="px-8 py-6 font-bold text-yellow-500">
+                        #{index + 1}
                   </td>
 
                   <td className="px-8 py-6 text-zinc-300">
                     {item.createdAt.toString().slice(0, 10)}
                   </td>
+                  {session?.user?.isAdmin && (
+  <>
+    <td className="px-8 py-6 text-white">
+      {item.phone || "-"}
+    </td>
+
+    <td className="px-8 py-6 text-white max-w-xs">
+      <p className="line-clamp-2">
+        {item.address || "-"}
+      </p>
+    </td>
+
+    <td className="px-8 py-6 text-zinc-300 max-w-xs">
+      <p className="line-clamp-2">
+        {item.notes || "No notes"}
+      </p>
+    </td>
+  </>
+)}
 
                 <td className="px-8 py-6">
   <div className="w-72">
